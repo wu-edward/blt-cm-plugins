@@ -4,12 +4,21 @@ namespace WuEdward\BltCm\Blt\Plugin\Commands;
 
 use Acquia\Blt\Robo\BltTasks;
 use Acquia\Blt\Robo\Exceptions\BltException;
+use Consolidation\AnnotatedCommand\CommandData;
 use Robo\Contract\VerbosityThresholdInterface;
+use Robo\Result;
 
 /**
  * Provides Acquia BLT commands to help with config management.
  */
 class BltCmCommands extends BltTasks {
+
+  /**
+   * When running `blt source:build:settings`, whether to ask to add services.
+   *
+   * @var bool
+   */
+  protected static $askToAddServicesToSettings = TRUE;
 
   /**
    * Adds service to sync Drupal config entity UUIDs from sync storage.
@@ -141,7 +150,13 @@ EOT;
         $this->say(sprintf('The default.global.settings.php file does not exist in %s. You may need to run blt source:build:settings.', $filepath));
         $confirm = $this->confirm('Should BLT attempt to run that now? This may overwrite files.');
         if ($confirm) {
+          // Set a flag to FALSE, so that in the post-command hook for
+          // source:build:settings, users will not be prompted to add services
+          // since already in process of adding them.
+          // @see ::promptUserToAddServices()
+          static::$askToAddServicesToSettings = FALSE;
           $this->invokeCommand('source:build:settings');
+          static::$askToAddServicesToSettings = TRUE;
         }
         else {
           throw new BltException('Unable to create global.settings.php file.');
@@ -204,6 +219,42 @@ EOT;
           $this->say('<warning>PHPCBF failed.</warning>');
           break;
       }
+    }
+  }
+
+  /**
+   * Prompts user whether to add the UUID sync or profile split services.
+   *
+   * This hook will run after source:build:settings.
+   *
+   * @param mixed $result
+   *   The source:build:settings command result.
+   * @param \Consolidation\AnnotatedCommand\CommandData $command_data
+   *   The data associated with the command.
+   *
+   * @hook post-command source:build:settings
+   *
+   * @throws \Acquia\Blt\Robo\Exceptions\BltException
+   *   On any errors adding the service definitions.
+   */
+  public function promptUserToAddServices($result, CommandData $command_data) {
+    // Since commands to add services can in turn call source:build:settings,
+    // check that one of those commands in not in progress to prevent looping.
+    // Also, do not proceed if source:build:settings was not successful
+    // otherwise.
+    if (!static::$askToAddServicesToSettings ||
+        ($result instanceof Result && !$result->wasSuccessful())) {
+      return;
+    }
+
+    $confirm = $this->confirm('Add service definition(s) to sync config entity UUIDs during site installation?');
+    if ($confirm) {
+      $this->uuidSyncInit();
+    }
+
+    $confirm = $this->confirm('Add service definitions(s) to allow profile splits during site installation?');
+    if ($confirm) {
+      $this->profileSplitInit();
     }
   }
 
