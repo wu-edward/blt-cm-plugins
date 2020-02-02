@@ -22,3 +22,9 @@ services:
     arguments: ['@config.storage.sync', '@extension.list.profile', '%install_profile%']
     tags:
       - { name: event_subscriber }
+
+  blt_cm_plugins.profile_split.overrider:
+    class: WuEdward\BltCm\Drupal\Config\ProfileSplitConfigOverrides
+    arguments: ['@entity_type.manager', '%install_profile%']
+    tags:
+      - { name: config.factory.override, priority: 5 }
