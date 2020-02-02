@@ -1,0 +1,28 @@
+# This file can be added to `$settings['container_yamls']` in settings.php
+# so that these service definitions will be added to the container during site
+# installation.
+#
+# @example
+# @code
+#
+# // Add services to be able to use and enable config splits based on separate
+# // profiles when installing Drupal from existing configuration.
+# if (\Drupal\Core\Installer\InstallerKernel::installationAttempted()) {
+#   $settings['container_yamls'][] = {PATH TO VENDOR}/wu-edward/blt-cm-plugins/profile_split_installation_services.yml';
+# }
+# @endcode
+#
+# This is to be used in conjunction with the services defined in
+# profile_split_services.yml, but this service definition file should be added
+# to the container only during site installation. See example code logic above.
+
+services:
+  # Override the config sync storage so that import transform event is
+  # dispatched during site installation..
+  blt_cm_plugins.profile_split.config.storage.sync:
+    class: WuEdward\BltCm\Drupal\Config\ProfileSplitSyncStorage
+    decorates: config.storage.sync
+    # Set decoration priority to try to ensure this will run last.
+    decoration_priority: -1000
+    public: false
+    arguments: ['@blt_cm_plugins.profile_split.config.storage.sync.inner', '@config.import_transformer']

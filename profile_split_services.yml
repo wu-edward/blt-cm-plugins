@@ -1,0 +1,24 @@
+# This file can be added to `$settings['container_yamls']` in settings.php
+# so that these service definitions will be added to the container even during
+# site installation.
+#
+# @example
+# @code
+#
+# // Add services to be able to use and enable config splits based on separate
+# // profiles when installing Drupal from existing configuration.
+# $settings['container_yamls'][] = {PATH TO VENDOR}/wu-edward/blt-cm-plugins/profile_split_services.yml';
+# @endcode
+
+services:
+  blt_cm_plugins.profile_split.config_import_transform_subscriber:
+    class: WuEdward\BltCm\Drupal\EventSubscriber\ProfileSplitConfigImportTransformSubscriber
+    arguments: ['@config.storage', '@extension.list.profile', '%install_profile%']
+    tags:
+      - { name: event_subscriber }
+
+  blt_cm_plugins.profile_split.config_export_transform_subscriber:
+    class: WuEdward\BltCm\Drupal\EventSubscriber\ProfileSplitConfigExportTransformSubscriber
+    arguments: ['@config.storage.sync', '@extension.list.profile', '%install_profile%']
+    tags:
+      - { name: event_subscriber }
