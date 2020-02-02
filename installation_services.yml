@@ -1,0 +1,19 @@
+# This file can be added to `$settings['container_yamls']` in settings.php
+# so that during Drupal install, these services will be injected to alter
+# the config installation process.
+
+# @example
+# @code
+#
+# if (\Drupal\Core\Installer\InstallerKernel::installationAttempted()) {
+#   $settings['container_yamls'][] = {PATH TO VENDOR}/wu-edward/blt-cm-plugins/installation_services.yml';
+# }
+# @endcode
+
+services:
+  # Override the core module handler to set config entity UUIDs based on sync.
+  blt_cm_plugins.installation.module_handler:
+    class: WuEdward\BltCm\Drupal\Config\SyncConfigEntityUuidModuleHandler
+    decorates: module_handler
+    public: false
+    arguments: ['@app.root', '%container.modules%', '@cache.bootstrap']
