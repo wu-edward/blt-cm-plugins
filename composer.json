@@ -1,0 +1,20 @@
+{
+    "name": "wu-edward/blt-cm-plugins",
+    "description": "Drupal configuration management plugins for Acquia BLT",
+    "require": {
+        "php": ">=7.2",
+        "acquia/blt": ">=9.2.0",
+        "drupal/core": ">=8.8"
+    },
+    "authors": [
+        {
+            "name": "Edward Wu",
+            "email": "edward.wu@acquia.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "WuEdward\\BltCm\\": "src/"
+        }
+    }
+}
