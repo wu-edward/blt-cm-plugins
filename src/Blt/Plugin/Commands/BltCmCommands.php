@@ -39,6 +39,36 @@ EOT;
   }
 
   /**
+   * Adds service to allow for profiles splits during site installation.
+   *
+   * @command cm:profile:split:init
+   *
+   * @throws \Acquia\Blt\Robo\Exceptions\BltException
+   *   On failure.
+   */
+  public function profileSplitInit() {
+    $installation_service_definition_path = $this->getServiceDefinitionPath('profile_split_installation_services.yml');
+    $service_definition_path = $this->getServiceDefinitionPath('profile_split_services.yml');
+    $service_definition_snippet = <<<EOT
+
+// Add services to be able to use and enable config splits based on separate
+// profiles when installing Drupal from existing configuration.
+if (\Drupal\Core\Installer\InstallerKernel::installationAttempted()) {
+  \$settings['container_yamls'][] = DRUPAL_ROOT . '/{$installation_service_definition_path}';
+}
+\$settings['container_yamls'][] = DRUPAL_ROOT . '/{$service_definition_path}';
+
+EOT;
+
+    $result = $this->addServiceDefinitionToSettingsFile($service_definition_snippet);
+    if (!$result->wasSuccessful()) {
+      throw new BltException('Unable to add service definition(s) to allow profile splits during site installation.');
+    }
+
+    $this->say('<info>Successfully added service definition(s) to allow profile splits during site installation.</info>');
+  }
+
+  /**
    * Get the relative path from the Drupal docroot to this package root.
    *
    * @param string $yaml_file_name
