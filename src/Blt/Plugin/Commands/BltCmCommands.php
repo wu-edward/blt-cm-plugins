@@ -108,6 +108,7 @@ EOT;
       ->setVerbosityThreshold(VerbosityThresholdInterface::VERBOSITY_VERBOSE)
       ->run();
 
+    $this->beautifyGlobalSettingsFile();
     return $result;
   }
 
@@ -159,6 +160,51 @@ EOT;
     }
 
     return $global_settings_path;
+  }
+
+  /**
+   * Runs phpcbf to fix the global.settings.php based on user interaction.
+   *
+   * For convenience, the UUID sync snippet uses a fully namespaced class, so
+   * running phpcbf can correctly add the use statement.
+   */
+  protected function beautifyGlobalSettingsFile() {
+    $confirm = $this->confirm('Use phpcbf to fix and beautify the global.settings.php file per coding standards?');
+    if ($confirm) {
+      try {
+        $global_settings_path = $this->ensureGlobalSettingsFile();
+        $bin = $this->getConfigValue('composer.bin');
+        $result = $this->taskExec("$bin/phpcbf $global_settings_path")
+          ->run();
+      }
+      catch (BltException $e) {
+        $this->say('<warning>PHPCBF failed.</warning>');
+      }
+
+      $exit_code = $result->getExitCode();
+      // - 0 indicates that no fixable errors were found.
+      // - 1 indicates that all fixable errors were fixed correctly.
+      // - 2 indicates that PHPCBF failed to fix some of the fixable errors.
+      // - 3 is used for general script execution errors.
+      switch ($exit_code) {
+        case 0:
+          $this->say('<info>No fixable errors were found, and so nothing was fixed.</info>');
+          break;
+
+        case 1:
+          $this->say('<comment>Please note that exit code 1 does not indicate an error for PHPCBF.</comment>');
+          $this->say('<info>All fixable errors were fixed correctly. There may still be errors that could not be fixed automatically.</info>');
+          break;
+
+        case 2:
+          $this->say('<warning>PHPCBF failed to fix some of the fixable errors it found.</warning>');
+          break;
+
+        default:
+          $this->say('<warning>PHPCBF failed.</warning>');
+          break;
+      }
+    }
   }
 
 }
