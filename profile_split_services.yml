@@ -11,17 +11,14 @@
 # @endcode
 
 services:
-  blt_cm_plugins.profile_split.config_import_transform_subscriber:
-    class: BltCm\Drupal\EventSubscriber\ProfileSplitConfigImportTransformSubscriber
-    arguments: ['@config.storage', '@extension.list.profile', '%install_profile%']
-    tags:
-      - { name: event_subscriber }
-
-  blt_cm_plugins.profile_split.config_export_transform_subscriber:
-    class: BltCm\Drupal\EventSubscriber\ProfileSplitConfigExportTransformSubscriber
-    arguments: ['@config.storage.sync', '@extension.list.profile', '%install_profile%']
-    tags:
-      - { name: event_subscriber }
+  # Override the config sync storage so that the core.extension.yml profile is ignored.
+  blt_cm_plugins.profile_split.config.storage.sync:
+    class: BltCm\Drupal\Config\ProfileSplitSyncStorage
+    decorates: config.storage.sync
+    # Set decoration priority to try to ensure this will run last.
+    decoration_priority: -1000
+    public: false
+    arguments: ['@blt_cm_plugins.profile_split.config.storage.sync.inner', '@config.storage', '@extension.list.profile', '%install_profile%']
 
   blt_cm_plugins.profile_split.overrider:
     class: BltCm\Drupal\Config\ProfileSplitConfigOverrides

@@ -56,15 +56,11 @@ EOT;
    *   On failure.
    */
   public function profileSplitInit() {
-    $installation_service_definition_path = $this->getServiceDefinitionPath('profile_split_installation_services.yml');
     $service_definition_path = $this->getServiceDefinitionPath('profile_split_services.yml');
     $service_definition_snippet = <<<EOT
 
 // Add services to be able to use and enable config splits based on separate
 // profiles when installing Drupal from existing configuration.
-if (\Drupal\Core\Installer\InstallerKernel::installationAttempted()) {
-  \$settings['container_yamls'][] = DRUPAL_ROOT . '/{$installation_service_definition_path}';
-}
 \$settings['container_yamls'][] = DRUPAL_ROOT . '/{$service_definition_path}';
 
 EOT;
