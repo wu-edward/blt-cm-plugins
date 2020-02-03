@@ -66,7 +66,8 @@ class SyncConfigEntityUuidModuleHandler extends ModuleHandler {
       // Getting sync storage directory this way instead injecting
       // `config.sync.storage` to reduce chance of possible circular service
       // dependencies.
-      $sync_storage = new FileStorage(Settings::get('config_sync_directory'));
+      global $config_directories;
+      $sync_storage = new FileStorage($config_directories[CONFIG_SYNC_DIRECTORY]);
       if ($uuid_key &&
           $sync_storage->exists($config_name) &&
           ($data = $sync_storage->read($config_name)) &&
