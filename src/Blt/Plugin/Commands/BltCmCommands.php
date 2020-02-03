@@ -78,6 +78,34 @@ EOT;
   }
 
   /**
+   * Adds service to use profile's config/sync directory as config.storage.sync.
+   *
+   * @command cm:profile:sync:set
+   *
+   * @throws \Acquia\Blt\Robo\Exceptions\BltException
+   *   On failure.
+   */
+  public function useProfileAsConfigSync() {
+    $this->addEmptyCoreExtensionFile();
+
+    $service_definition_path = $this->getServiceDefinitionPath('profile_config_sync_services.yml');
+    $service_definition_snippet = <<<EOT
+
+// Add services to be set the profile's config/sync directory for the
+// `config.storage.sync` service.
+\$settings['container_yamls'][] = DRUPAL_ROOT . '/{$service_definition_path}';
+
+EOT;
+
+    $result = $this->addServiceDefinitionToSettingsFile($service_definition_snippet);
+    if (!$result->wasSuccessful()) {
+      throw new BltException('Unable to add service definition(s) to use profile directory for configuration sync.');
+    }
+
+    $this->say('<info>Successfully added service definition(s) to use profile directory for configuration sync.</info>');
+  }
+
+  /**
    * Get the relative path from the Drupal docroot to this package root.
    *
    * @param string $yaml_file_name
@@ -223,6 +251,29 @@ EOT;
   }
 
   /**
+   * Adds an empty core.extension.yml file to the configured sync path.
+   *
+   * This will allow blt setup/sync to import configuration even when the sync
+   * directory is set somewhere else dynamically.
+   */
+  protected function addEmptyCoreExtensionFile() {
+    $cm_core_key = $this->getConfigValue('cm.core.key');
+    $core_config_path = $this->getConfigValue('docroot') . '/' . $this->getConfigValue("cm.core.dirs.$cm_core_key.path");
+    $core_config_file = $core_config_path . '/core.extension.yml';
+    if (file_exists($core_config_file)) {
+      return;
+    }
+
+    $result = $this->taskWriteToFile($core_config_file)
+      ->text('# This file intentionally left blank. Check install profile\'s config/sync directory.')
+      ->setVerbosityThreshold(VerbosityThresholdInterface::VERBOSITY_VERBOSE)
+      ->run();
+    if (!$result->wasSuccessful()) {
+      throw new BltException(sprintf('<warning>Could not add core.extension.yml file to %s.</warning>', $core_config_path));
+    }
+  }
+
+  /**
    * Prompts user whether to add the UUID sync or profile split services.
    *
    * This hook will run after source:build:settings.
@@ -255,6 +306,11 @@ EOT;
     $confirm = $this->confirm('Add service definitions(s) to allow profile splits during site installation?');
     if ($confirm) {
       $this->profileSplitInit();
+    }
+
+    $confirm = $this->confirm('Add service definitions(s) to to use profile directory for configuration sync?');
+    if ($confirm) {
+      $this->useProfileAsConfigSync();
     }
   }
 
