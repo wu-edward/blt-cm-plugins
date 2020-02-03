@@ -5,7 +5,7 @@
 # @example
 # @code
 #
-# if (\Drupal\Core\Installer\InstallerKernel::installationAttempted()) {
+# if (drupal_installation_attempted()) {
 #   $settings['container_yamls'][] = {PATH TO VENDOR}/wu-edward/blt-cm-plugins/installation_services.yml';
 # }
 # @endcode

@@ -33,7 +33,7 @@ class BltCmCommands extends BltTasks {
     $service_definition_snippet = <<<EOT
 
 // Add service definitions to be used during Drupal installation.
-if (\Drupal\Core\Installer\InstallerKernel::installationAttempted()) {
+if (drupal_installation_attempted()) {
   \$settings['container_yamls'][] = DRUPAL_ROOT . '/{$service_definition_path}';
 }
 
@@ -207,9 +207,6 @@ EOT;
 
   /**
    * Runs phpcbf to fix the global.settings.php based on user interaction.
-   *
-   * For convenience, the UUID sync snippet uses a fully namespaced class, so
-   * running phpcbf can correctly add the use statement.
    */
   protected function beautifyGlobalSettingsFile() {
     $confirm = $this->confirm('Use phpcbf to fix and beautify the global.settings.php file per coding standards?');
