@@ -4,7 +4,7 @@
     "require": {
         "php": ">=7.2",
         "acquia/blt": ">=9.2.0",
-        "drupal/core": ">=8.8"
+        "drupal/core": "~8.7.0"
     },
     "authors": [
         {
