@@ -1,0 +1,21 @@
+# This file can be added to `$settings['container_yamls']` in settings.php
+# so that these service definitions will be added to the container even during
+# site installation.
+#
+# @example
+# @code
+#
+# // Add services to be set the profile's config/sync directory for the
+# // `config.storage.sync` service.
+# $settings['container_yamls'][] = {PATH TO VENDOR}/wu-edward/blt-cm-plugins/profile_split_services.yml';
+# @endcode
+
+services:
+  # Override the config sync storage to use profile's config/sync directory.
+  blt_cm_plugins.profile.config.storage.sync:
+    class: WuEdward\BltCm\Drupal\Config\ProfileSyncStorage
+    decorates: config.storage.sync
+    # Set decoration priority to try to ensure this will run first.
+    decoration_priority: 1000
+    public: false
+    arguments: ['@blt_cm_plugins.profile.config.storage.sync.inner', '@extension.list.profile', '%install_profile%']
