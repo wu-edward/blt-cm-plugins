@@ -1,6 +1,6 @@
 <?php
 
-namespace WuEdward\BltCm\Blt\Plugin\Commands;
+namespace BltCm\Blt\Plugin\Commands;
 
 use Acquia\Blt\Robo\BltTasks;
 use Acquia\Blt\Robo\Exceptions\BltException;

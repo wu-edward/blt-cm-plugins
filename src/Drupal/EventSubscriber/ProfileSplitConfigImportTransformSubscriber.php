@@ -1,6 +1,6 @@
 <?php
 
-namespace WuEdward\BltCm\Drupal\EventSubscriber;
+namespace BltCm\Drupal\EventSubscriber;
 
 use Drupal\Core\Config\ConfigEvents;
 use Drupal\Core\Config\StorageInterface;

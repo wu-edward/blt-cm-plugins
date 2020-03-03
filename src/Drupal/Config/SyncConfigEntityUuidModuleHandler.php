@@ -1,6 +1,6 @@
 <?php
 
-namespace WuEdward\BltCm\Drupal\Config;
+namespace BltCm\Drupal\Config;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
 use Drupal\Core\Config\FileStorage;

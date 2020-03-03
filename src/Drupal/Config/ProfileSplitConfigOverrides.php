@@ -1,6 +1,6 @@
 <?php
 
-namespace WuEdward\BltCm\Drupal\Config;
+namespace BltCm\Drupal\Config;
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Config\ConfigFactoryOverrideInterface;

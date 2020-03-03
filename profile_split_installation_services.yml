@@ -20,7 +20,7 @@ services:
   # Override the config sync storage so that import transform event is
   # dispatched during site installation..
   blt_cm_plugins.profile_split.config.storage.sync:
-    class: WuEdward\BltCm\Drupal\Config\ProfileSplitSyncStorage
+    class: BltCm\Drupal\Config\ProfileSplitSyncStorage
     decorates: config.storage.sync
     # Set decoration priority to try to ensure this will run last.
     decoration_priority: -1000

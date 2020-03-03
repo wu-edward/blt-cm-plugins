@@ -12,19 +12,19 @@
 
 services:
   blt_cm_plugins.profile_split.config_import_transform_subscriber:
-    class: WuEdward\BltCm\Drupal\EventSubscriber\ProfileSplitConfigImportTransformSubscriber
+    class: BltCm\Drupal\EventSubscriber\ProfileSplitConfigImportTransformSubscriber
     arguments: ['@config.storage', '@extension.list.profile', '%install_profile%']
     tags:
       - { name: event_subscriber }
 
   blt_cm_plugins.profile_split.config_export_transform_subscriber:
-    class: WuEdward\BltCm\Drupal\EventSubscriber\ProfileSplitConfigExportTransformSubscriber
+    class: BltCm\Drupal\EventSubscriber\ProfileSplitConfigExportTransformSubscriber
     arguments: ['@config.storage.sync', '@extension.list.profile', '%install_profile%']
     tags:
       - { name: event_subscriber }
 
   blt_cm_plugins.profile_split.overrider:
-    class: WuEdward\BltCm\Drupal\Config\ProfileSplitConfigOverrides
+    class: BltCm\Drupal\Config\ProfileSplitConfigOverrides
     arguments: ['@entity_type.manager', '%install_profile%']
     tags:
       - { name: config.factory.override, priority: 5 }

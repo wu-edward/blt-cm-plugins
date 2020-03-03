@@ -1,6 +1,6 @@
 <?php
 
-namespace WuEdward\BltCm\Drupal\Config;
+namespace BltCm\Drupal\Config;
 
 use Drupal\Core\Config\ImportStorageTransformer;
 use Drupal\Core\Config\StorageInterface;
@@ -12,7 +12,7 @@ use Drupal\Core\Config\StorageInterface;
  * that the import transform event is dispatched and the import data can be
  * altered by subscribers.
  *
- * @see \WuEdward\BltCm\Drupal\EventSubscriber\ProfileSplitConfigImportTransformSubscriber
+ * @see \BltCm\Drupal\EventSubscriber\ProfileSplitConfigImportTransformSubscriber
  */
 class ProfileSplitSyncStorage implements StorageInterface {
 

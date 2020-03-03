@@ -13,7 +13,7 @@
 services:
   # Override the config sync storage to use profile's config/sync directory.
   blt_cm_plugins.profile.config.storage.sync:
-    class: WuEdward\BltCm\Drupal\Config\ProfileSyncStorage
+    class: BltCm\Drupal\Config\ProfileSyncStorage
     decorates: config.storage.sync
     # Set decoration priority to try to ensure this will run first.
     decoration_priority: 1000

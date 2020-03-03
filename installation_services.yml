@@ -13,7 +13,7 @@
 services:
   # Override the core module handler to set config entity UUIDs based on sync.
   blt_cm_plugins.installation.module_handler:
-    class: WuEdward\BltCm\Drupal\Config\SyncConfigEntityUuidModuleHandler
+    class: BltCm\Drupal\Config\SyncConfigEntityUuidModuleHandler
     decorates: module_handler
     public: false
     arguments: ['@app.root', '%container.modules%', '@cache.bootstrap']
